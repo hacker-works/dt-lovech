@@ -15,5 +15,3 @@ git remote add origin https://github.com/hacker-works/dt-lovech.git
 git branch -M main
 git push -u origin main
 ```
-
-Done!
