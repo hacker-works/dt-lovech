@@ -10,7 +10,7 @@ The needed configuration is in `wordpress/docker-compose.yml`
 
 If the docker machine is not started run `open --background -a Docker` and wait 
 for the Docker Desktop to initialize.  Then run `docker-compose up -d`. When 
-ready you can open in the browser the Wordpress site at `http://localhost:8000`.
+ready you can open in the browser the Wordpress site at `http://localhost:8080`.
 
 To shut it down run `docker-compose down`.
 

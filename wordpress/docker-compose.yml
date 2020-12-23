@@ -1,31 +1,57 @@
 version: '3'
 
 services:
-  db:
-    image: mysql:5.7
+  wordpress:
+    image: wordpress:php7.4-fpm
+    container_name: wordpress
+    depends_on:
+      - mysql
     volumes:
-      - db_data:/var/lib/mysql
+      - ./core/wordpress:/var/www/html
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    ports:
-      - 3306
+      WORDPRESS_TABLE_PREFIX: wp_
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: password
+    networks:
+      - wordpress-network
 
-  wordpress:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    volumes:
+      - ./core/mysql:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+    networks:
+      - wordpress-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
     depends_on:
-      - db
-    image: wordpress:latest
+      - wordpress
     ports:
       - '8080:80'
+    volumes:
+      - ./core/wordpress:/var/www/html
+      - ./core/logs/nginx:/var/log/nginx
+      - ./nginx-conf:/etc/nginx/conf.d
     restart: always
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
+    networks:
+      - wordpress-network
 
 volumes:
-  db_data: {}
+  mysql: {}
+  wordpress: {}
 
+networks:
+  wordpress-network:
+    driver: bridge
