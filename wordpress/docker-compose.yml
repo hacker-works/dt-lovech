@@ -7,6 +7,7 @@ services:
     depends_on:
       - mysql
     volumes:
+      - ./php-conf/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./core/wordpress:/var/www/html
     restart: always
     environment:
@@ -30,6 +31,8 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: password
       MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+    cap_add:
+      - SYS_NICE
     networks:
       - wordpress-network
 
